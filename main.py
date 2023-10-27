@@ -14,18 +14,15 @@ def upload_form():
 
 @app.route('/', methods=['POST'])
 def upload_video():
-    file = request.files['file']
-    filename = secure_filename(file.filename)
-    file.save(os.path.join('static/', filename))
-
-
-# Code for Project 265 Grayscale start here
-	source = cv2.VideoCapture('static/'+filename)   
+	file = request.files['file']
+	filename = secure_filename(file.filename)
+	file.save(os.path.join('static/', filename))
+	source = cv2.VideoCapture('static/'+filename)
 	frame_width = int(source.get(3))
 	frame_height = int(source.get(4))
 	size = (frame_width, frame_height)
-
 	result = cv2.VideoWriter('static/'+'blackandwhite.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30, size, 0)
+    
 	try:
 		while True:
 			status, frame_image = source.read()
@@ -34,9 +31,10 @@ def upload_video():
 			video_file = 'blackandwhite.mp4'
 	except:
 		print('Completed reading all the Frames from the Video')
+
+	return render_template('upload.html', filename=filename)
          
-# Code for Project 265 end here
-    return render_template('upload.html', filename=filename)
+    
 
 @app.route('/download')
 
